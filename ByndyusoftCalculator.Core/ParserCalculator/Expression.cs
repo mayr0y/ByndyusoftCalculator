@@ -12,7 +12,7 @@ namespace ByndyusoftCalculator.Core.ParserCalculator {
             } else {
                 foreach(var operation in Operation) {
                     for(var valueIndex = value.Length - 1; valueIndex >=0; valueIndex--) {
-                        if (value[valueIndex] == '-' && (valueIndex == 0 || value[valueIndex - 1].IsDigit() == false))
+                        if (value[valueIndex] == '-' && (valueIndex == 0 || value[valueIndex - 1].IsDigit() == false)) //проверка на отрицательное число
                             continue;
 
                         if (operation.Value.Contains(value[valueIndex])) {
@@ -28,11 +28,14 @@ namespace ByndyusoftCalculator.Core.ParserCalculator {
 
                             try {
                                 var resultOperation = ResultOperation[value[valueIndex]](firstExpression.Result, secondExpression.Result);
-                                return new Calculator(resultOperation);
-
-                            } catch (DivideByZeroException){
-                                return new Calculator("Деление на ноль");
-                            } catch (Exception e) {
+                                return double.IsInfinity(resultOperation)
+                                    ? new Calculator("Результат вышел за пределы чисел или было деление на ноль")
+                                    : new Calculator(resultOperation);
+                            }
+                            catch (DivideByZeroException e) {
+                                return new Calculator(e.Message);
+                            }
+                            catch (Exception e) {
                                 return new Calculator(e.Message);
                             }
                         }
