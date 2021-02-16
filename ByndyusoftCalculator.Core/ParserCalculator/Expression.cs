@@ -6,7 +6,10 @@ using System.Collections.Generic;
 namespace ByndyusoftCalculator.Core.ParserCalculator {
     public static class Expression {
         public static Calculator Parse(string value) {
-            if(Regex.IsMatch(value, @"^-?(\d+|\d+\.\d+)$")) {
+            value = Parentheses.TrimParentheses(value);
+            var topLevelParentheses = Parentheses.GetTopLevelParentheses(value, true);
+
+            if (Regex.IsMatch(value, @"^-?(\d+|\d+\.\d+)$")) {
                 return double.TryParse(value, out double parseResult) ? new Calculator(parseResult) :
                     new Calculator($"Нечитаемое выражение \"{value}\"");
             } else {
@@ -39,6 +42,10 @@ namespace ByndyusoftCalculator.Core.ParserCalculator {
                                 return new Calculator(e.Message);
                             }
                         }
+
+                        if (value[valueIndex] == ')') {
+                            valueIndex = topLevelParentheses[valueIndex];
+                        }
                     }
                 }
             }
@@ -58,8 +65,5 @@ namespace ByndyusoftCalculator.Core.ParserCalculator {
             { '/', (d1, d2) => d1 / d2 },
         };
 
-        private static readonly HashSet<char> Digits = new HashSet<char>()
-        { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.' };
-        public static bool IsDigit(this char c) => Digits.Contains(c);
     }
 }

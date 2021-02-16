@@ -7,6 +7,9 @@ namespace ByndyusoftCalculator.Core.ParserCalculator {
             if (value == null || Regex.IsMatch(value, "^([-+/*]\\d+(\\.\\d+)?)*") == false || Regex.IsMatch(value, "\\d\\s+\\d")) {
                 return (false, $"Нечитаемое выражение \"{value}\"");
             }
+            if (Parentheses.ValidateParentheses(value) == false) {
+                return (false, "Разное количество скобок");
+            }
             return (true, null);
         }
 
