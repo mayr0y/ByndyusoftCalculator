@@ -5,4 +5,7 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ByndyusoftCalculator.Core\ByndyusoftCalculator.Core.csproj" />
+  </ItemGroup>
 </Project>
